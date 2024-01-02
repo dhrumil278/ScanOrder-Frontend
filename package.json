@@ -118,5 +118,8 @@
       "last 1 safari version"
     ]
   },
-  "homepage": ""
+  "homepage": "",
+  "engines": {
+    "node": "^16.20"
+  }
 }
