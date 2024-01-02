@@ -1,9 +1,17 @@
 import { useSkin } from '@hooks/useSkin';
 import { Link } from 'react-router-dom';
 import logo from '@src/assets/images/logo/logo.png';
-import { Facebook, Twitter, Mail, GitHub } from 'react-feather';
+import { Facebook, Twitter, Mail, GitHub, Eye, EyeOff } from 'react-feather';
 import InputPasswordToggle from '@components/input-password-toggle';
 import axios from 'axios';
+import '@styles/react/pages/page-authentication.scss';
+import { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom';
+import SpinnerComponent from '../../../@core/components/spinner/Fallback-spinner';
+import toast, { Toaster } from 'react-hot-toast';
+import { Controller, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
 import {
   Row,
   Col,
@@ -14,19 +22,31 @@ import {
   Input,
   Button,
   Spinner,
+  InputGroupText,
+  InputGroup,
 } from 'reactstrap';
-import '@styles/react/pages/page-authentication.scss';
-import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom';
-import SpinnerComponent from '../../../@core/components/spinner/Fallback-spinner';
-// import { ToastContainer, toast } from 'react-toastify';
-import toast, { Toaster } from 'react-hot-toast';
+
+const schema = Yup.object({
+  email: Yup.string().email().required('Please Enter your Email'),
+  password: Yup.string().required('Please Enter your Password'),
+}).required();
 
 const LoginCover = () => {
   const { skin } = useSkin();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [visibility, setVisibility] = useState(false);
+  const [remember, setRemember] = useState(false);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  const renderIcon = () => {
+    return visibility ? <Eye size={14} /> : <EyeOff size={14} />;
+  };
 
   const history = useHistory();
 
@@ -38,17 +58,15 @@ const LoginCover = () => {
     if (accessToken) {
       history.push('/home');
     }
-    // toast.error('This is an Erro');
   }, []);
 
-  const handleLogin = async (e) => {
-    setIsLoading(true);
-    e.preventDefault();
-    console.log({ email, password });
+  const onSubmit = async (data) => {
+    console.log('data: ', data);
     try {
+      setIsLoading(true);
       const res = await axios.post(
         `${process.env.REACT_APP_API}/user/auth/login`,
-        { email, password },
+        data,
       );
       if (res.status === 200) {
         localStorage.setItem('accessToken', res.data.data.token);
@@ -60,6 +78,12 @@ const LoginCover = () => {
       toast.error(error.response.data.message);
     }
   };
+  // const handleLogin = async (e) => {
+  //   setIsLoading(true);
+  //   e.preventDefault();
+  //   console.log({ email, password });
+  //
+  // };
 
   return (
     <>
@@ -99,21 +123,26 @@ const LoginCover = () => {
               </CardText>
               <Form
                 className="auth-login-form mt-2"
-                onSubmit={(e) => handleLogin(e)}
+                onSubmit={handleSubmit(onSubmit)}
               >
                 <div className="mb-1">
                   <Label className="form-label" for="login-email">
                     Email
                   </Label>
-                  <Input
-                    type="email"
-                    id="login-email"
-                    placeholder="john@example.com"
+                  <Controller
                     name="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    autoFocus
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        type="text"
+                        placeholder="john@example.com"
+                        {...field}
+                      />
+                    )}
                   />
+                  <p className="text-danger form-label">
+                    {errors.email?.message}
+                  </p>
                 </div>
                 <div className="mb-1">
                   <div className="d-flex justify-content-between">
@@ -124,16 +153,37 @@ const LoginCover = () => {
                       <small>Forgot Password?</small>
                     </Link>
                   </div>
-                  <InputPasswordToggle
-                    className="input-group-merge"
-                    id="login-password"
-                    name="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
+                  <InputGroup>
+                    <Controller
+                      name="password"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          className="border-end-0"
+                          type={visibility ? 'text' : 'password'}
+                          placeholder="------------"
+                          {...field}
+                        />
+                      )}
+                    />
+                    <InputGroupText
+                      className="cursor-pointer"
+                      onClick={() => setVisibility(!visibility)}
+                    >
+                      {renderIcon()}
+                    </InputGroupText>
+                  </InputGroup>
+                  <p className="text-danger form-label">
+                    {errors.password?.message}
+                  </p>
                 </div>
                 <div className="form-check mb-1">
-                  <Input type="checkbox" id="remember-me" />
+                  <Input
+                    type="checkbox"
+                    id="remember-me"
+                    value={remember}
+                    onClick={(e) => setRemember(!remember)}
+                  />
                   <Label className="form-check-label" for="remember-me">
                     Remember Me
                   </Label>
@@ -143,13 +193,7 @@ const LoginCover = () => {
                     <Spinner size="sm">Loading...</Spinner>
                   </Button>
                 ) : (
-                  <Button
-                    color="primary"
-                    tag={Link}
-                    block
-                    onClick={handleLogin}
-                    disabled={email.trim() === '' || password.trim() === ''}
-                  >
+                  <Button color="primary" type="submit" block>
                     Sign in
                   </Button>
                 )}

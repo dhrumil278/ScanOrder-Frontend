@@ -4,6 +4,9 @@ import {
   // Navigate
 } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import { Controller, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
 // ** Reactstrap Imports
 import {
   Row,
@@ -34,13 +37,25 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 import SpinnerComponent from '../../../@core/components/spinner/Fallback-spinner';
 
+const schema = Yup.object({
+  email: Yup.string().email().required('Please Enter your Email'),
+}).required();
+
 const ForgotPassword = () => {
   // ** Hooks
   const { skin } = useSkin();
 
   const history = useHistory();
-  const [email, setEmail] = useState();
+  // const [email, setEmail] = useState();
   const [isLoading, setIsLoading] = useState(false);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
   const illustration =
       skin === 'dark'
@@ -48,12 +63,12 @@ const ForgotPassword = () => {
         : 'forgot-password-v2.svg',
     source = require(`@src/assets/images/pages/${illustration}`).default;
 
-  const handleForgotPassword = async (e) => {
+  const onSubmit = async (data) => {
     try {
       setIsLoading(true);
       const res = await axios.post(
         `${process.env.REACT_APP_API}/user/auth/forgotPassword`,
-        { email },
+        data,
       );
 
       if (res.status === 200) {
@@ -110,32 +125,33 @@ const ForgotPassword = () => {
               </CardText>
               <Form
                 className="auth-forgot-password-form mt-2"
-                onSubmit={(e) => e.preventDefault()}
+                onSubmit={handleSubmit(onSubmit)}
               >
                 <div className="mb-1">
                   <Label className="form-label" for="login-email">
                     Email
                   </Label>
-                  <Input
-                    type="email"
-                    id="login-email"
-                    value={email}
-                    placeholder="john@example.com"
-                    autoFocus
-                    onChange={(e) => setEmail(e.target.value)}
+                  <Controller
+                    name="email"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        type="text"
+                        placeholder="john@example.com"
+                        {...field}
+                      />
+                    )}
                   />
+                  <p className="text-danger form-label">
+                    {errors.email?.message}
+                  </p>
                 </div>
                 {isLoading ? (
                   <Button type="submit" block color="primary">
                     <Spinner size="sm">Loading...</Spinner>
                   </Button>
                 ) : (
-                  <Button
-                    color="primary"
-                    block
-                    onClick={handleForgotPassword}
-                    disabled={email.trim() === ''}
-                  >
+                  <Button color="primary" block type="submit">
                     Send reset link
                   </Button>
                 )}

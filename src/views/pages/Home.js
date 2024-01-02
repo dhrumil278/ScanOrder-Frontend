@@ -13,12 +13,12 @@ import toast, { Toaster } from 'react-hot-toast';
 const Home = () => {
   const history = useHistory();
 
-  useEffect(() => {
-    let accessToken = localStorage.getItem('accessToken');
-    if (!accessToken) {
-      history.push('/login');
-    }
-  }, []);
+  // useEffect(() => {
+  //   let accessToken = localStorage.getItem('accessToken');
+  //   if (!accessToken) {
+  //     history.push('/login');
+  //   }
+  // }, []);
   return (
     <>
       <Toaster />

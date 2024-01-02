@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom';
 
 // ** Icons Imports
-import { ChevronLeft, FastForward } from 'react-feather';
+import { ChevronLeft, Eye, EyeOff, FastForward } from 'react-feather';
 
 // ** Custom Components
 import InputPassword from '@components/input-password-toggle';
@@ -17,6 +17,9 @@ import {
   Label,
   Button,
   Spinner,
+  InputGroup,
+  InputGroupText,
+  Input,
 } from 'reactstrap';
 
 // ** Styles
@@ -26,15 +29,42 @@ import { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom/cjs/react-router-dom';
 import SpinnerComponent from '../../../@core/components/spinner/Fallback-spinner';
 import axios from 'axios';
+import { Controller, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as Yup from 'yup';
+
+const schema = Yup.object({
+  password: Yup.string().required('Required'),
+  confpassword: Yup.string()
+    .oneOf([Yup.ref('password'), null], 'Passwords must be same')
+    .required('Required'),
+}).required();
 
 const ResetPasswordBasic = () => {
-  const [newpassword, setNewPassword] = useState('');
-  const [confirmpassword, setConfirmPassword] = useState('');
+  // const [newpassword, setNewPassword] = useState('');
+  // const [confirmpassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [newPassVisibility, setNewPassVisibility] = useState(false);
+  const [confPassVisibility, setConfPassVisibility] = useState(false);
 
   const location = useLocation();
   const history = useHistory();
   const { token } = location.state;
+
+  const newPassRenderIcon = () => {
+    return newPassVisibility ? <Eye size={14} /> : <EyeOff size={14} />;
+  };
+  const confPassRenderIcon = () => {
+    return confPassVisibility ? <Eye size={14} /> : <EyeOff size={14} />;
+  };
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
   useEffect(() => {
     if (!token) {
@@ -42,13 +72,13 @@ const ResetPasswordBasic = () => {
     }
   }, []);
 
-  const handleResetPassword = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
+    console.log('data: ', data);
     try {
       setIsLoading(true);
       const res = await axios.post(
         `${process.env.REACT_APP_API}/user/auth/changeForgotPassword`,
-        { password: newpassword },
+        data,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -56,7 +86,7 @@ const ResetPasswordBasic = () => {
       if (res.status === 200) {
         localStorage.setItem(
           'accessToken',
-          JSON.stringify({ token: res.data.data.token }),
+          JSON.stringify({ token: res.data?.data?.token }),
         );
         setIsLoading(false);
         history.push('/home');
@@ -65,7 +95,6 @@ const ResetPasswordBasic = () => {
       console.log('error: ', error);
       setIsLoading(false);
       toast.error(error.response.data.message);
-
       history.push('/login');
     }
   };
@@ -99,47 +128,74 @@ const ResetPasswordBasic = () => {
                   </CardText>
                   <Form
                     className="auth-reset-password-form mt-2"
-                    onSubmit={(e) => e.preventDefault()}
+                    onSubmit={handleSubmit(onSubmit)}
                   >
                     <div className="mb-1">
                       <Label className="form-label" for="new-password">
                         New Password
                       </Label>
-                      <InputPassword
-                        className="input-group-merge"
-                        id="new-password"
-                        autoFocus
-                        value={newpassword}
-                        placeholder="***********"
-                        onChange={(e) => setNewPassword(e.target.value)}
-                      />
+                      <InputGroup>
+                        <Controller
+                          name="password"
+                          control={control}
+                          render={({ field }) => (
+                            <Input
+                              className="border-end-0"
+                              type={newPassVisibility ? 'text' : 'password'}
+                              placeholder="------------"
+                              {...field}
+                            />
+                          )}
+                        />
+                        <InputGroupText
+                          className="cursor-pointer"
+                          onClick={() =>
+                            setNewPassVisibility(!newPassVisibility)
+                          }
+                        >
+                          {newPassRenderIcon()}
+                        </InputGroupText>
+                      </InputGroup>
+                      <p className="text-danger form-label">
+                        {errors.password?.message}
+                      </p>
                     </div>
                     <div className="mb-1">
                       <Label className="form-label" for="confirm-password">
                         Confirm Password
                       </Label>
-                      <InputPassword
-                        className="input-group-merge"
-                        id="confirm-password"
-                        value={confirmpassword}
-                        placeholder="***********"
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                      />
+                      <InputGroup>
+                        <Controller
+                          name="confpassword"
+                          control={control}
+                          render={({ field }) => (
+                            <Input
+                              className="border-end-0"
+                              type={confPassVisibility ? 'text' : 'password'}
+                              placeholder="------------"
+                              {...field}
+                            />
+                          )}
+                        />
+                        <InputGroupText
+                          className="cursor-pointer"
+                          onClick={() =>
+                            setConfPassVisibility(!confPassVisibility)
+                          }
+                        >
+                          {confPassRenderIcon()}
+                        </InputGroupText>
+                      </InputGroup>
+                      <p className="text-danger form-label">
+                        {errors.confpassword?.message}
+                      </p>
                     </div>
                     {isLoading ? (
                       <Button type="submit" block color="primary">
                         <Spinner size="sm">Loading...</Spinner>
                       </Button>
                     ) : (
-                      <Button
-                        color="primary"
-                        block
-                        onClick={handleResetPassword}
-                        disabled={
-                          confirmpassword.trim() === '' ||
-                          newpassword.trim() === ''
-                        }
-                      >
+                      <Button type="submit" color="primary" block>
                         Set New Password
                       </Button>
                     )}
