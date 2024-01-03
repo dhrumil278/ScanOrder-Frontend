@@ -89,7 +89,7 @@ const ResetPasswordBasic = () => {
           JSON.stringify({ token: res.data?.data?.token }),
         );
         setIsLoading(false);
-        history.push('/home');
+        history.push('/login');
       }
     } catch (error) {
       console.log('error: ', error);

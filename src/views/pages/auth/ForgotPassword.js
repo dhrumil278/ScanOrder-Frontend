@@ -74,7 +74,11 @@ const ForgotPassword = () => {
       if (res.status === 200) {
         history.push({
           pathname: '/verifyEmail',
-          state: { email: res.data.data.email },
+          state: {
+            email: res.data.data.email,
+            token: res.data.data.accessToken,
+            api: 'forgotEmailVerification',
+          },
         });
       }
     } catch (error) {

@@ -119,7 +119,11 @@ const Register = () => {
         localStorage.setItem('email', res.data.data.email);
         history.push({
           pathname: '/verifyEmail',
-          state: { email: res.data.data.email },
+          state: {
+            email: res.data.data.email,
+            token: res.data.data.accessToken,
+            api: 'emailVerification',
+          },
         });
       }
     } catch (error) {
