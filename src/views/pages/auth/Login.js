@@ -71,6 +71,12 @@ const LoginCover = () => {
       if (res.status === 200) {
         localStorage.setItem('accessToken', res.data.data.token);
         history.push('/home');
+        history.push({
+          pathname: '/home',
+          state: {
+            userData: res.data.data,
+          },
+        });
       }
     } catch (error) {
       setIsLoading(false);

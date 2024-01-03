@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom/cjs/react-router-dom';
 import {
   Card,
   CardHeader,
@@ -12,13 +12,20 @@ import toast, { Toaster } from 'react-hot-toast';
 
 const Home = () => {
   const history = useHistory();
+  const location = useLocation();
+  let userData = location?.state?.userData
+    ? location?.state
+    : JSON.parse(localStorage.getItem('userData'));
 
-  // useEffect(() => {
-  //   let accessToken = localStorage.getItem('accessToken');
-  //   if (!accessToken) {
-  //     history.push('/login');
-  //   }
-  // }, []);
+  useEffect(() => {
+    let accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      history.push('/login');
+    }
+    if (userData) {
+      localStorage.setItem('userData', JSON.stringify(userData));
+    }
+  }, []);
   return (
     <>
       <Toaster />

@@ -1,6 +1,6 @@
 // ** React Imports
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // ** Custom Components
 import Avatar from '@components/avatar';
 
@@ -30,18 +30,37 @@ import {
 // ** Default Avatar Image
 import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
+import axios from 'axios';
 
 const UserDropdown = () => {
+  // const { userProfile } = props;
   // ** State
-  const [userData] = useState(null);
+  // const [userData] = useState(null);
   const history = useHistory();
   //** ComponentDidMount
-  // useEffect(() => {
-  //   if (isUserLoggedIn() !== null) {
-  //     setUserData(JSON.parse(localStorage.getItem('userData')))
-  //   }
-  // }, [])
 
+  const [token, setToken] = useState([]);
+  const [userProfile, setUserProfile] = useState(null);
+  useEffect(() => {
+    setToken(localStorage.getItem('accessToken'));
+    getUserdata();
+  }, []);
+  const getUserdata = async () => {
+    try {
+      const res = await axios.get(
+        `${process.env.REACT_APP_API}/user/getUserProfile`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      console.log('res: ', res);
+      if (res.status === 200) {
+        setUserProfile(res.data.data);
+      }
+    } catch (error) {
+      console.log('error: ', error);
+    }
+  };
   const handleLogout = (e) => {
     e.preventDefault();
     localStorage.removeItem('accessToken');
@@ -49,7 +68,8 @@ const UserDropdown = () => {
   };
 
   //** Vars
-  const userAvatar = (userData && userData.avatar) || defaultAvatar;
+  console.log('userProfile: ', userProfile);
+  const userAvatar = (userProfile && userProfile.avatar) || defaultAvatar;
 
   return (
     <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
@@ -59,14 +79,6 @@ const UserDropdown = () => {
         className="nav-link dropdown-user-link"
         onClick={(e) => e.preventDefault()}
       >
-        <div className="user-nav d-sm-flex d-none">
-          <span className="user-name fw-bold">
-            {(userData && userData['username']) || 'John Doe'}
-          </span>
-          <span className="user-status">
-            {(userData && userData.role) || 'Admin'}
-          </span>
-        </div>
         <Avatar img={userAvatar} imgHeight="40" imgWidth="40" status="online" />
       </DropdownToggle>
       <DropdownMenu end>

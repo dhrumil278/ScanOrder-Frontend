@@ -14,11 +14,11 @@ const Routes = [
   },
   {
     path: '/myprofile',
-    component: lazy(() => import('../../views/pages/MyProfile')),
+    component: lazy(() => import('../../views/pages/profile/MyProfile')),
   },
   {
     path: '/accountsetting',
-    component: lazy(() => import('../../views/pages/AccountSetting')),
+    component: lazy(() => import('../../views/pages/profile/AccountSetting')),
   },
   {
     path: '/second-page',

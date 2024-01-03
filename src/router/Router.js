@@ -23,6 +23,15 @@ import { DefaultRoute, Routes } from './routes';
 import BlankLayout from '@layouts/BlankLayout';
 import VerticalLayout from '@src/layouts/VerticalLayout';
 import HorizontalLayout from '@src/layouts/HorizontalLayout';
+import Home from '../views/pages/Home';
+import LoginCover from '../views/pages/auth/Login';
+import Register from '../views/pages/auth/Register';
+import ForgotPassword from '../views/pages/auth/ForgotPassword';
+import VerifyEmailBasic from '../views/pages/auth/VerifyEmail';
+import ResetPasswordBasic from '../views/pages/auth/ResetPassword';
+import Profile from '../views/pages/profile/MyProfile';
+import AccountSettings from '../views/pages/profile/AccountSetting';
+import SecondPage from '../views/SecondPage';
 
 const Router = () => {
   // ** Hooks

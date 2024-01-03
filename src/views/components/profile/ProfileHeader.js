@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // ** Icons Imports
 import { DollarSign, Heart, ShoppingBag, User } from 'react-feather';
@@ -19,31 +19,44 @@ import ProfileAbout from './ProfileAbout';
 import PreviousOrders from './PreviousOrders';
 import Credits from './Credits';
 import Favourites from './Favourites';
-
-const data = {
-  header: {
-    avatar: require('@src/assets/images/portrait/small/avatar-s-2.jpg').default,
-    username: 'Kitty Allanson',
-    designation: 'UI/UX Designer',
-    coverImg: require('@src/assets/images/profile/user-uploads/timeline.jpg')
-      .default,
-  },
-  userAbout: {
-    about:
-      'Tart I love sugar plum I love oat cake. Sweet ⭐️ roll caramels I love jujubes. Topping cake wafer.',
-    joined: 'November 15, 2015',
-    lives: 'New York, USA',
-    email: 'bucketful@fiendhead.org',
-    website: 'www.pixinvent.com',
-  },
-};
+import axios from 'axios';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const ProfileHeader = () => {
   // ** States
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('1');
+  const [userProfile, setUserProfile] = useState(null);
+  const [token, setToken] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggle = () => setIsOpen(!isOpen);
+
+  useEffect(() => {
+    setToken(localStorage.getItem('accessToken'));
+    getUserdata();
+  }, []);
+
+  const getUserdata = async () => {
+    try {
+      setIsLoading(true);
+      const res = await axios.get(
+        `${process.env.REACT_APP_API}/user/getUserProfile`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      console.log('res: ', res);
+      if (res.status === 200) {
+        setUserProfile(res.data.data);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      console.log('error: ', error);
+      setIsLoading(false);
+    }
+  };
 
   const toggleTab = (data) => {
     setActiveTab(data);
@@ -52,19 +65,31 @@ const ProfileHeader = () => {
   return (
     <>
       <Card className="profile-header mb-2">
-        <CardImg src={data.header.coverImg} alt="User Profile Image" top />
+        <div
+          style={{
+            height: '90px',
+            background:
+              'linear-gradient(90deg, rgba(184,180,247,1) 21%, rgba(115,103,240,1) 87%)',
+          }}
+          top
+        ></div>
         <div className="position-relative">
           <div className="profile-img-container d-flex align-items-center">
             <div className="profile-img">
               <img
                 className="rounded img-fluid"
-                src={data.header.avatar}
+                style={{ maxWidth: '92px', height: '92px' }}
+                src={
+                  userProfile?.avatar
+                    ? userProfile?.avatar
+                    : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
+                }
                 alt="Card image"
               />
             </div>
             <div className="profile-title ms-3">
-              <h2 className="text-white">{data.header.username}</h2>
-              <p className="text-white">{data.header.designation}</p>
+              <h2 className="text-white">{userProfile?.username}</h2>
+              <p className="text-white">{userProfile?.email}</p>
             </div>
           </div>
         </div>
@@ -75,9 +100,6 @@ const ProfileHeader = () => {
             expand="md"
             light
           >
-            {/* <Button color="" className="btn-icon navbar-toggler" onClick={toggle}>
-            <AlignJustify size={21} />
-          </Button> */}
             <div className="profile-tabs d-flex justify-content-between flex-wrap mt-3 mt-md-0">
               <Nav className="mb-0" pills>
                 <NavItem>
@@ -133,7 +155,11 @@ const ProfileHeader = () => {
       </Card>
       <TabContent activeTab={activeTab}>
         <TabPane tabId="1">
-          <ProfileAbout data={data.userAbout} />
+          {isLoading ? (
+            <Skeleton height={40} count={10} style={{ marginBottom: '5px' }} />
+          ) : (
+            <ProfileAbout userProfile={userProfile} />
+          )}
         </TabPane>
         <TabPane tabId="2">
           <PreviousOrders />

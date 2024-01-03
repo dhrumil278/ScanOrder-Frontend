@@ -19,12 +19,12 @@ import { User, Lock } from 'react-feather';
 // ** Demo Components
 import Breadcrumbs from '@components/breadcrumbs';
 
-import Tabs from '../components/accountSetting/Tabs';
+import Tabs from '../../components/accountSetting/Tabs';
 // import BillingTabContent from './BillingTabContent'
-import AccountTabContent from '../components/accountSetting/AccountTabContent';
-import SecurityTabContent from '../components/accountSetting/SecurityTabContent';
-import ConnectionsTabContent from '../components/accountSetting/ConnectionsTabContent';
-import NotificationsTabContent from '../components/accountSetting/NotificationsTabContent';
+import AccountTabContent from '../../components/accountSetting/AccountTabContent';
+import SecurityTabContent from '../../components/accountSetting/SecurityTabContent';
+import ConnectionsTabContent from '../../components/accountSetting/ConnectionsTabContent';
+import NotificationsTabContent from '../../components/accountSetting/NotificationsTabContent';
 
 // ** Styles
 import '@styles/react/libs/flatpickr/flatpickr.scss';

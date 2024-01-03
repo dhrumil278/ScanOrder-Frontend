@@ -6,7 +6,7 @@ import { ChevronLeft, Eye, EyeOff, FastForward } from 'react-feather';
 
 // ** Custom Components
 import InputPassword from '@components/input-password-toggle';
-import { ToastContainer, toast } from 'react-toastify';
+import toast, { Toaster } from 'react-hot-toast';
 // ** Reactstrap Imports
 import {
   Card,
@@ -104,7 +104,7 @@ const ResetPasswordBasic = () => {
         <SpinnerComponent />
       ) : (
         <>
-          <ToastContainer />
+          <Toaster />
           <div className="auth-wrapper auth-basic px-2">
             <div className="auth-inner my-2">
               <Card className="mb-0">

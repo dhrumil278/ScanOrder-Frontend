@@ -13,8 +13,8 @@ import { Bell } from 'react-feather';
 
 const NavbarUser = (props) => {
   // ** Props
-  const { skin, setSkin } = props;
-
+  const { skin, setSkin, userProfile } = props;
+  console.log('Navbar users');
   // ** Function to toggle Theme (Light/Dark)
   const ThemeToggler = () => {
     if (skin === 'dark') {
@@ -35,7 +35,7 @@ const NavbarUser = (props) => {
       </div>
       <ul className="nav navbar-nav align-items-center ms-auto">
         <Bell />
-        <UserDropdown />
+        <UserDropdown userProfile={userProfile} />
       </ul>
     </Fragment>
   );
