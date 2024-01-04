@@ -20,8 +20,15 @@ const ProfileAbout = ({ userProfile }) => {
         <div className="mt-2">
           <h5 className="mb-75">Address:</h5>
           <CardText>
-            {userProfile?.address},{userProfile?.city},{userProfile?.state},
-            {userProfile?.country},{userProfile?.zipcode}
+            {userProfile?.address}
+            {', '}
+            {userProfile?.city}
+            {', '}
+            {userProfile?.state}
+            {', '}
+            {userProfile?.country}
+            {', '}
+            {userProfile?.zipcode}
           </CardText>
         </div>
       </CardBody>
