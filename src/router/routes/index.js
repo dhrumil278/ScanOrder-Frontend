@@ -17,6 +17,10 @@ const Routes = [
     component: lazy(() => import('../../views/pages/Restorunts/LandingPage')),
   },
   {
+    path: '/foodPage',
+    component: lazy(() => import('../../views/pages/Restorunts/FoodPage')),
+  },
+  {
     path: '/myprofile',
     component: lazy(() => import('../../views/pages/profile/MyProfile')),
   },

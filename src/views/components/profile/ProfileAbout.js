@@ -2,6 +2,7 @@
 import { Card, CardBody, CardText } from 'reactstrap';
 
 const ProfileAbout = ({ userProfile }) => {
+  console.log('userProfile: ', userProfile);
   return (
     <Card>
       <CardBody>

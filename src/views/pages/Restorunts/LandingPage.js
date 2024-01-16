@@ -13,6 +13,8 @@ import {
   Row,
 } from 'reactstrap';
 import { FaRupeeSign } from 'react-icons/fa';
+import Rating from 'react-rating';
+import { Star } from 'react-feather';
 
 function LandingPage() {
   const history = useHistory();
@@ -28,7 +30,7 @@ function LandingPage() {
     if (!getToken) {
       history.push('/login');
     }
-    console.log('Landing page called');
+
     setToken(getToken);
     getAllCategory();
     // toggleCategory();
@@ -45,7 +47,6 @@ function LandingPage() {
         },
       );
 
-      console.log('categoryRes: ', categoryRes);
       if (categoryRes.status === 200) {
         setCategory(categoryRes.data.data);
         setIsLoading(false);
@@ -53,28 +54,34 @@ function LandingPage() {
       }
     } catch (error) {
       setIsLoading(false);
-      console.log('error: ', error);
     }
   };
 
   const toggleCategory = async (index, categoryName) => {
-    console.log('toggleCategory: ');
     setActive(index);
     try {
       setCategoryLoading(true);
       const categoryItemRes = await axios.get(
         `${process.env.REACT_APP_API}/food/getFoodByCategory?category=${categoryName}&shopId=2af3906a-7313-46a1-8f66-416e5cc0f78a`,
       );
-      console.log('categoryItemRes: ', categoryItemRes);
+
       if (categoryItemRes.status === 200) {
         setCategoryLoading(false);
         setFood(categoryItemRes.data.data);
       }
     } catch (error) {
-      setCategoryLoading(false);
       console.log('error: ', error);
+      setCategoryLoading(false);
     }
   };
+  const handlemain = (e, id, shopId) => {
+    e.preventDefault();
+    history.push({
+      pathname: '/foodPage',
+      state: { foodId: id, shopId: shopId },
+    });
+  };
+  const handleAddToCart = (e, id) => {};
   return (
     <>
       <div
@@ -108,18 +115,21 @@ function LandingPage() {
                 <Col xs="4">
                   <div
                     style={{
-                      backgroundImage: `url(${food.image[0]})`,
-                      backgroundRepeat: 'no-repeat',
-                      // backgroundAttachment: 'fixed',
-                      backgroundPosition: 'center',
+                      background: `url(${food.image[0]}) no-repeat center center/cover`,
+                      borderRadius: '5px',
                       width: '100px',
                       height: '100px',
                     }}
+                    onClick={(e) => handlemain(e, food.id, food.shopId)}
                   ></div>
                 </Col>
                 <Col xs="8" className="px-0 d-flex flex-column">
                   <CardHeader className="p-0 px-1">
-                    <CardTitle tag="h5" className="">
+                    <CardTitle
+                      tag="h5"
+                      className=""
+                      onClick={(e) => handlemain(e, food.id, food.shopId)}
+                    >
                       {food.title}
                     </CardTitle>
                   </CardHeader>
@@ -130,9 +140,26 @@ function LandingPage() {
                     >
                       {food.description}
                     </p>
-                    <strong style={{ fontSize: '13px' }}>
-                      <FaRupeeSign size={12} /> : {food.price}
-                    </strong>
+                    <p
+                      className="mb-0"
+                      style={{ fontSize: '13px', fontWeight: '800' }}
+                    >
+                      <span style={{ paddingTop: '4px' }}>
+                        <FaRupeeSign size={12} />
+                      </span>
+                      : {food.price}
+                    </p>
+                    <Rating
+                      fractions={2}
+                      direction="ltr"
+                      initialRating={3}
+                      emptySymbol={
+                        <Star size={12} fill="#babfc7" stroke="#babfc7" />
+                      }
+                      fullSymbol={
+                        <Star size={12} fill="#FFB534" stroke="#FFB534" />
+                      }
+                    />
                     <Button
                       color="primary"
                       className="mt-1"
@@ -141,6 +168,7 @@ function LandingPage() {
                         fontSize: '1rem',
                         marginLeft: 'auto',
                       }}
+                      onClick={(e) => handleAddToCart(e, food.id)}
                     >
                       Add to cart
                     </Button>

@@ -40,6 +40,7 @@ const ProfileHeader = () => {
 
   const getUserdata = async () => {
     try {
+      console.log('token: ', token);
       setIsLoading(true);
       const res = await axios.get(
         `${process.env.REACT_APP_API}/user/getUserProfile`,
@@ -158,7 +159,10 @@ const ProfileHeader = () => {
           {isLoading ? (
             <Skeleton height={40} count={10} style={{ marginBottom: '5px' }} />
           ) : (
-            <ProfileAbout userProfile={userProfile} />
+            <>
+              {console.log('userProfile in header:', userProfile)}
+              <ProfileAbout userProfile={userProfile} />
+            </>
           )}
         </TabPane>
         <TabPane tabId="2">
