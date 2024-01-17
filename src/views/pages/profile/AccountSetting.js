@@ -62,7 +62,6 @@ const AccountSettings = () => {
   const [activeTab, setActiveTab] = useState('1');
 
   const toggleTab = (data) => {
-    console.log('set the active tab as', data);
     setActiveTab(data);
   };
 

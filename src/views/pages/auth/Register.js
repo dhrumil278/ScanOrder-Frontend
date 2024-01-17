@@ -106,14 +106,13 @@ const Register = () => {
     source = require(`@src/assets/images/pages/${illustration}`).default;
 
   const onSubmit = async (data) => {
-    console.log(data);
     try {
       setIsLoading(true);
       const res = await axios.post(
         `${process.env.REACT_APP_API}/user/register`,
         data,
       );
-      console.log('res: ', res);
+
       setIsLoading(false);
       if (res.status === 200) {
         localStorage.setItem('email', res.data.data.email);
@@ -127,7 +126,6 @@ const Register = () => {
         });
       }
     } catch (error) {
-      console.log('error: ', error);
       setIsLoading(false);
       toast.error(error.response.data.message);
     }

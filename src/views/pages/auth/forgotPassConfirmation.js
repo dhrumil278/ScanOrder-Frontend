@@ -45,7 +45,6 @@ const forgotPasswordConfirmation = () => {
         // history.push('/resetpassword');
       }
     } catch (error) {
-      console.log('error: ', error);
       setIsLoading(false);
       toast.error(error.response.data.message);
 

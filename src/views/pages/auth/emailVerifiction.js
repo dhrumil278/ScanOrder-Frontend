@@ -22,16 +22,11 @@ const EmailVerification = () => {
     setIsLoading(true);
     const param = searchParams.get('token');
     if (param) {
-      console.log('param: ', param);
       userVerify(param);
     }
   }, []);
 
   const userVerify = async (token) => {
-    console.log('token: ', token);
-    console.log('token: ', typeof token);
-    console.log('userVerify called..!');
-
     try {
       const res = await axios.post(
         `${process.env.REACT_APP_API}/user/auth/emailVerification`,
@@ -41,11 +36,9 @@ const EmailVerification = () => {
         },
       );
       if (res.status === 200) {
-        console.log('success Response');
         history.push('/home');
       }
     } catch (error) {
-      console.log('error: ', error);
       setIsLoading(false);
       toast.error(error.response.data.message);
       history.push('/login');

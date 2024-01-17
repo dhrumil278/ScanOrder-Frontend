@@ -14,7 +14,7 @@ import { Bell } from 'react-feather';
 const NavbarUser = (props) => {
   // ** Props
   const { skin, setSkin, userProfile } = props;
-  console.log('Navbar users');
+
   // ** Function to toggle Theme (Light/Dark)
   const ThemeToggler = () => {
     if (skin === 'dark') {

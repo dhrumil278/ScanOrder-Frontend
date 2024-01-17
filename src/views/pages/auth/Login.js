@@ -61,7 +61,6 @@ const LoginCover = () => {
   }, []);
 
   const onSubmit = async (data) => {
-    console.log('data: ', data);
     try {
       setIsLoading(true);
       const res = await axios.post(
@@ -80,14 +79,14 @@ const LoginCover = () => {
       }
     } catch (error) {
       setIsLoading(false);
-      console.log('error: ', error.response.data.message);
+
       toast.error(error.response.data.message);
     }
   };
   // const handleLogin = async (e) => {
   //   setIsLoading(true);
   //   e.preventDefault();
-  //   console.log({ email, password });
+  //
   //
   // };
 

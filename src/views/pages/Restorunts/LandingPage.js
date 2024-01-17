@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
+import { CiHeart } from 'react-icons/ci';
 import {
   Button,
   ButtonGroup,
@@ -15,6 +16,11 @@ import {
 import { FaRupeeSign } from 'react-icons/fa';
 import Rating from 'react-rating';
 import { Star } from 'react-feather';
+
+// ** Images
+import veg from '@src/assets/images/veg/icons8-veg-48.png';
+import nonVeg from '@src/assets/images/veg/non-vegetarian-food-symbol-48.png';
+import FoodCard from '../../components/food/foodCard';
 
 function LandingPage() {
   const history = useHistory();
@@ -62,7 +68,7 @@ function LandingPage() {
     try {
       setCategoryLoading(true);
       const categoryItemRes = await axios.get(
-        `${process.env.REACT_APP_API}/food/getFoodByCategory?category=${categoryName}&shopId=2af3906a-7313-46a1-8f66-416e5cc0f78a`,
+        `${process.env.REACT_APP_API}/food/getFoodByCategory?category=${categoryName}&shopId=2af3906a-7313-46a1-8f66-416e5cc0f78a`, //TODO change Here
       );
 
       if (categoryItemRes.status === 200) {
@@ -70,18 +76,10 @@ function LandingPage() {
         setFood(categoryItemRes.data.data);
       }
     } catch (error) {
-      console.log('error: ', error);
       setCategoryLoading(false);
     }
   };
-  const handlemain = (e, id, shopId) => {
-    e.preventDefault();
-    history.push({
-      pathname: '/foodPage',
-      state: { foodId: id, shopId: shopId },
-    });
-  };
-  const handleAddToCart = (e, id) => {};
+
   return (
     <>
       <div
@@ -109,85 +107,7 @@ function LandingPage() {
         <Skeleton />
       ) : (
         food.map((food, index) => {
-          return (
-            <Card className="card-snippet mt-2" key={index}>
-              <Row className="p-1">
-                <Col xs="4">
-                  <div
-                    style={{
-                      background: `url(${food.image[0]}) no-repeat center center/cover`,
-                      borderRadius: '5px',
-                      width: '100px',
-                      height: '100px',
-                    }}
-                    onClick={(e) => handlemain(e, food.id, food.shopId)}
-                  ></div>
-                </Col>
-                <Col xs="8" className="px-0 d-flex flex-column">
-                  <CardHeader className="p-0 px-1">
-                    <CardTitle
-                      tag="h5"
-                      className=""
-                      onClick={(e) => handlemain(e, food.id, food.shopId)}
-                    >
-                      {food.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardBody className="p-0 px-1 d-flex flex-column">
-                    <p
-                      className="mb-0 text-truncate"
-                      style={{ fontSize: '10px' }}
-                    >
-                      {food.description}
-                    </p>
-                    <p
-                      className="mb-0"
-                      style={{ fontSize: '13px', fontWeight: '800' }}
-                    >
-                      <span style={{ paddingTop: '4px' }}>
-                        <FaRupeeSign size={12} />
-                      </span>
-                      : {food.price}
-                    </p>
-                    <Rating
-                      fractions={2}
-                      direction="ltr"
-                      initialRating={3}
-                      emptySymbol={
-                        <Star size={12} fill="#babfc7" stroke="#babfc7" />
-                      }
-                      fullSymbol={
-                        <Star size={12} fill="#FFB534" stroke="#FFB534" />
-                      }
-                    />
-                    <Button
-                      color="primary"
-                      className="mt-1"
-                      style={{
-                        padding: '7px 11px',
-                        fontSize: '1rem',
-                        marginLeft: 'auto',
-                      }}
-                      onClick={(e) => handleAddToCart(e, food.id)}
-                    >
-                      Add to cart
-                    </Button>
-                    {/* <ButtonGroup className="mt-1" style={{ marginLeft: 'auto' }}>
-                <Button style={{ padding: '7px 11px' }} outline>
-                  -
-                </Button>
-                <Button style={{ padding: '7px 11px' }} outline>
-                  1
-                </Button>
-                <Button style={{ padding: '7px 11px' }} outline>
-                  +
-                </Button>
-              </ButtonGroup> */}
-                  </CardBody>
-                </Col>
-              </Row>
-            </Card>
-          );
+          return <FoodCard food={food} />;
         })
       )}
     </>

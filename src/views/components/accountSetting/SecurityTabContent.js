@@ -69,7 +69,6 @@ const SecurityTabContent = () => {
   }, []);
 
   const onSubmit = async (data) => {
-    console.log('data: ', data);
     try {
       setSubmitLoader(true);
       const res = await axios.post(
@@ -79,13 +78,12 @@ const SecurityTabContent = () => {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
-      console.log('res: ', res);
+
       if (res.status === 200) {
         setSubmitLoader(false);
         toast.success(res.data.message);
       }
     } catch (error) {
-      console.log('error: ', error);
       setSubmitLoader(false);
     }
   };

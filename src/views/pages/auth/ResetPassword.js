@@ -73,7 +73,6 @@ const ResetPasswordBasic = () => {
   }, []);
 
   const onSubmit = async (data) => {
-    console.log('data: ', data);
     try {
       setIsLoading(true);
       const res = await axios.post(
@@ -92,7 +91,6 @@ const ResetPasswordBasic = () => {
         history.push('/login');
       }
     } catch (error) {
-      console.log('error: ', error);
       setIsLoading(false);
       toast.error(error.response.data.message);
       history.push('/login');

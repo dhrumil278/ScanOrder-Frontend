@@ -21,25 +21,7 @@ const ThemeNavbar = (props) => {
 
   useEffect(() => {
     setToken(localStorage.getItem('accessToken'));
-    // getUserdata();
-    console.log('API CALL!!');
   });
-  const getUserdata = async () => {
-    try {
-      const res = await axios.get(
-        `${process.env.REACT_APP_API}/user/getUserProfile`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
-      if (res.status === 200) {
-        setUserProfile(res.data.data);
-      }
-    } catch (error) {
-      console.log('error: ', error);
-      toast.error(error.response.data.message);
-    }
-  };
   return (
     <Fragment>
       <Toaster />

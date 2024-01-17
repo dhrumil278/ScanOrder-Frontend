@@ -47,19 +47,14 @@ const UserDropdown = () => {
   }, []);
   const getUserdata = async () => {
     try {
-      const res = await axios.get(
-        `${process.env.REACT_APP_API}/user/getUserProfile`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
-      console.log('res: ', res);
+      const res = await axios.get(`${process.env.REACT_APP_API}/user/getUser`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
       if (res.status === 200) {
         setUserProfile(res.data.data);
       }
-    } catch (error) {
-      console.log('error: ', error);
-    }
+    } catch (error) {}
   };
   const handleLogout = (e) => {
     e.preventDefault();
@@ -68,7 +63,7 @@ const UserDropdown = () => {
   };
 
   //** Vars
-  console.log('userProfile: ', userProfile);
+
   const userAvatar = (userProfile && userProfile.avatar) || defaultAvatar;
 
   return (

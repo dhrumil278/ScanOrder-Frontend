@@ -34,27 +34,25 @@ const ProfileHeader = () => {
   const toggle = () => setIsOpen(!isOpen);
 
   useEffect(() => {
-    setToken(localStorage.getItem('accessToken'));
-    getUserdata();
+    let accessToken = localStorage.getItem('accessToken');
+    setToken(accessToken);
+
+    getUserdata(accessToken);
   }, []);
 
-  const getUserdata = async () => {
+  const getUserdata = async (accessToken) => {
     try {
-      console.log('token: ', token);
       setIsLoading(true);
-      const res = await axios.get(
-        `${process.env.REACT_APP_API}/user/getUserProfile`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
-      console.log('res: ', res);
+      const res = await axios.get(`${process.env.REACT_APP_API}/user/getUser`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
       if (res.status === 200) {
         setUserProfile(res.data.data);
         setIsLoading(false);
       }
     } catch (error) {
-      console.log('error: ', error);
+      console.log('error: ', { error });
       setIsLoading(false);
     }
   };
@@ -88,7 +86,7 @@ const ProfileHeader = () => {
                 alt="Card image"
               />
             </div>
-            <div className="profile-title ms-3">
+            <div className="profile-title ms-1">
               <h2 className="text-white">{userProfile?.username}</h2>
               <p className="text-white">{userProfile?.email}</p>
             </div>
@@ -160,7 +158,7 @@ const ProfileHeader = () => {
             <Skeleton height={40} count={10} style={{ marginBottom: '5px' }} />
           ) : (
             <>
-              {console.log('userProfile in header:', userProfile)}
+              {}
               <ProfileAbout userProfile={userProfile} />
             </>
           )}

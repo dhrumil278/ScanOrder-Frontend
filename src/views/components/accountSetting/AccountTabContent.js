@@ -62,19 +62,18 @@ const AccountTabs = ({ data }) => {
       try {
         setIsLoading(true);
         const res = await axios.get(
-          `${process.env.REACT_APP_API}/user/getUserProfile`,
+          `${process.env.REACT_APP_API}/user/getUser`,
           {
             headers: { Authorization: `Bearer ${token}` },
           },
         );
-        console.log('res: ', res);
+
         if (res.status === 200) {
           setUserProfile(res.data.data);
           setAvatar(res.data.data.avatar);
           setIsLoading(false);
         }
       } catch (error) {
-        console.log('error: ', error);
         setIsLoading(false);
       }
     };
@@ -82,7 +81,6 @@ const AccountTabs = ({ data }) => {
   }, []);
 
   const onSubmit = async (data) => {
-    console.log('data: ', data);
     try {
       setSubmitLoader(true);
       const res = await axios.post(
@@ -92,20 +90,19 @@ const AccountTabs = ({ data }) => {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
-      console.log('res: ', res);
+
       if (res.status === 200) {
         setUserProfile(res.data.data);
         setSubmitLoader(false);
       }
     } catch (error) {
-      console.log('error: ', error);
       setSubmitLoader(false);
     }
   };
 
   const handleFileChange = async (e) => {
     setSelectedFile(e.target.files[0]);
-    console.log('e.target.files[0]: ', e.target.files[0]);
+
     try {
       setAvatarLoading(true);
       if (e.target.files[0]) {
@@ -122,7 +119,7 @@ const AccountTabs = ({ data }) => {
             },
           },
         );
-        console.log('fileres: ', fileres);
+
         setAvatar(fileres.data.data.avatar);
         setAvatarLoading(false);
       } else {
@@ -131,7 +128,7 @@ const AccountTabs = ({ data }) => {
       }
     } catch (error) {
       setAvatarLoading(false);
-      console.log('error: ', error);
+
       toast.error(error.response.data.message);
     }
 

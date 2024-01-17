@@ -8,7 +8,7 @@ import { useLocation } from 'react-router-dom/cjs/react-router-dom';
 
 const HorizontalLayout = (props) => {
   const location = useLocation();
-  console.log('location?.state: ', location?.state);
+
   // const [menuData, setMenuData] = useState([])
 
   // ** For ServerSide navigation

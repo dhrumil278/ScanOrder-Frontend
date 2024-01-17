@@ -86,13 +86,12 @@ const Slider = () => {
       const getFood = await axios.get(
         `${process.env.REACT_APP_API}/food/getOneFood/${foodId}/${shopId}`,
       );
-      console.log('getFood: ', getFood);
+
       if (getFood.status === 200) {
         setGetFoodLoader(false);
         setFood(getFood.data.data);
       }
     } catch (error) {
-      console.log('error: ', error);
       setGetFoodLoader(false);
     }
   };

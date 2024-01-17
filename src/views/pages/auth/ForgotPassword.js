@@ -83,7 +83,7 @@ const ForgotPassword = () => {
       }
     } catch (error) {
       setIsLoading(false);
-      console.log('error: ', error);
+
       toast.error(error.response.data.message);
 
       history.push('/login');

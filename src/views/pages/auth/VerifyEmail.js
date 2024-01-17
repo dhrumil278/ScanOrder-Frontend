@@ -30,21 +30,16 @@ const VerifyEmailBasic = () => {
 
   const { email, api, token } = location.state;
 
-  console.log('token: ', token);
-  console.log('api: ', api);
-  console.log('email: ', email);
-
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const handlePaste = (event) => {
     const data = event.clipboardData.getData('text');
-    console.log(data);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('otp: ', otp);
+
     try {
       setIsLoading(true);
       let res;
@@ -79,7 +74,7 @@ const VerifyEmailBasic = () => {
       }
     } catch (error) {
       setIsLoading(false);
-      console.log('error: ', error);
+
       toast.error(error.response.data.message);
       history.push('/login');
     }
