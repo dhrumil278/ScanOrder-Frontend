@@ -26,6 +26,10 @@ function FoodCard({ food }) {
   const history = useHistory();
   const [isFavorites, setIsFavorites] = useState(false);
   const [token, setToken] = useState([]);
+  const [addToCart, setAddToCart] = useState(
+    food.isaddedincart ? food.isaddedincart : false,
+  );
+  const [quantity, setQuantity] = useState(food.quantity ? food.quantity : 0);
 
   useEffect(() => {
     setToken(localStorage.getItem('accessToken'));
@@ -43,7 +47,6 @@ function FoodCard({ food }) {
       }
     } catch (error) {
       setIsFavorites(false);
-      console.log('error: ', error);
     }
   };
 
@@ -54,7 +57,52 @@ function FoodCard({ food }) {
       state: { foodId: id, shopId: shopId },
     });
   };
-  const handleAddToCart = (e, id) => {};
+
+  const handleIncreaseQuantity = () => {
+    // setQuantity(quantity + 1);
+    setQuantity((q) => q + 1);
+
+    handleAddToCart(food.id, quantity + 1);
+  };
+
+  const handleDecreaseQuantity = () => {
+    // setQuantity(quantity - 1);
+    setQuantity((q) => q - 1);
+    handleAddToCart(food.id, quantity - 1);
+  };
+  const handleAddToCart = async (id, qty) => {
+    console.log('handleFavorites called : ', food.title);
+    try {
+      const res = await axios.post(
+        `${process.env.REACT_APP_API}/food/addFoodInCart`,
+        {
+          foodId: id,
+          shopId: '2af3906a-7313-46a1-8f66-416e5cc0f78a',
+          quantity: qty,
+        },
+      );
+
+      if (res.status === 200) {
+        if (qty === 0) {
+          // setQuantity(qty);
+          setQuantity((q) => qty);
+          setAddToCart(false);
+        } else {
+          // setQuantity(qty);
+          setQuantity((q) => qty);
+          setAddToCart(true);
+        }
+      }
+    } catch (error) {
+      if (qty >= 1) {
+        // setQuantity(qty - 1);
+        setQuantity((q) => qty - 1);
+        if (qty - 1 === 0) {
+          setAddToCart(false);
+        }
+      }
+    }
+  };
   return (
     <Card className="card-snippet mt-2">
       <Row className="p-1">
@@ -124,29 +172,46 @@ function FoodCard({ food }) {
                 />
               )}
             </div>
-            <Button
-              color="primary"
-              className="mt-1"
-              style={{
-                padding: '7px 11px',
-                fontSize: '1rem',
-                marginLeft: 'auto',
-              }}
-              onClick={(e) => handleAddToCart(e, food.id)}
-            >
-              Add to cart
-            </Button>
-            {/* <ButtonGroup className="mt-1" style={{ marginLeft: 'auto' }}>
-                <Button style={{ padding: '7px 11px' }} outline>
+            {console.log('food.title : ', food.title)}
+            {console.log('quantity condition: ', quantity > 0)}
+            {console.log('quantity: ', quantity)}
+            {console.log('addToCart: ', addToCart)}
+            {console.log('food?.isaddedincart: ', food?.isaddedincart)}
+            {(addToCart || food.isaddedincart) &&
+            (quantity > 0 || food?.quantity > 0) ? (
+              <ButtonGroup className="mt-1" style={{ marginLeft: 'auto' }}>
+                <Button
+                  style={{ padding: '7px 11px' }}
+                  outline
+                  onClick={handleDecreaseQuantity}
+                >
                   -
                 </Button>
                 <Button style={{ padding: '7px 11px' }} outline>
-                  1
+                  {quantity}
                 </Button>
-                <Button style={{ padding: '7px 11px' }} outline>
+                <Button
+                  style={{ padding: '7px 11px' }}
+                  outline
+                  onClick={handleIncreaseQuantity}
+                >
                   +
                 </Button>
-              </ButtonGroup> */}
+              </ButtonGroup>
+            ) : (
+              <Button
+                color="primary"
+                className="mt-1"
+                style={{
+                  padding: '7px 11px',
+                  fontSize: '1rem',
+                  marginLeft: 'auto',
+                }}
+                onClick={handleIncreaseQuantity}
+              >
+                Add to cart
+              </Button>
+            )}
           </CardBody>
         </Col>
       </Row>
