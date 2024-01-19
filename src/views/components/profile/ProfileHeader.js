@@ -21,6 +21,10 @@ import Credits from './Credits';
 import Favourites from './Favourites';
 import axios from 'axios';
 import Skeleton from 'react-loading-skeleton';
+import { MdHistory } from 'react-icons/md';
+import { FaRegUser } from 'react-icons/fa';
+import { IoHeartOutline } from 'react-icons/io5';
+import { AiOutlineDollarCircle } from 'react-icons/ai';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 const ProfileHeader = () => {
@@ -108,7 +112,7 @@ const ProfileHeader = () => {
                     onClick={() => toggleTab('1')}
                   >
                     <span className="d-none d-md-block">About</span>
-                    <User className="d-block d-md-none" size={14} />
+                    <FaRegUser className="d-block d-md-none" size={14} />
                   </NavLink>
                 </NavItem>
                 <NavItem>
@@ -118,7 +122,7 @@ const ProfileHeader = () => {
                     onClick={() => toggleTab('2')}
                   >
                     <span className="d-none d-md-block">Orders</span>
-                    <ShoppingBag className="d-block d-md-none" size={14} />
+                    <MdHistory className="d-block d-md-none" size={16} />
                   </NavLink>
                 </NavItem>
                 <NavItem>
@@ -128,7 +132,10 @@ const ProfileHeader = () => {
                     onClick={() => toggleTab('3')}
                   >
                     <span className="d-none d-md-block">Coins</span>
-                    <DollarSign className="d-block d-md-none" size={14} />
+                    <AiOutlineDollarCircle
+                      className="d-block d-md-none"
+                      size={16}
+                    />
                   </NavLink>
                 </NavItem>
                 <NavItem>
@@ -138,17 +145,11 @@ const ProfileHeader = () => {
                     onClick={() => toggleTab('4')}
                   >
                     <span className="d-none d-md-block">Favorites</span>
-                    <Heart className="d-block d-md-none" size={14} />
+                    <IoHeartOutline className="d-block d-md-none" size={16} />
                   </NavLink>
                 </NavItem>
               </Nav>
-              {/* <Button color="primary">
-              <Edit className="d-block d-md-none" size={14} />
-              <span className="fw-bold d-none d-md-block">Edit</span>
-            </Button> */}
             </div>
-            {/* <Collapse isOpen={isOpen} navbar>
-          </Collapse> */}
           </Navbar>
         </div>
       </Card>

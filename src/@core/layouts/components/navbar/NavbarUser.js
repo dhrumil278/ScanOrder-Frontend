@@ -8,8 +8,9 @@ import UserDropdown from './UserDropdown';
 import { Sun, Moon } from 'react-feather';
 
 // ** Reactstrap Imports
-import { NavItem, NavLink } from 'reactstrap';
+import { Badge, NavItem, NavLink } from 'reactstrap';
 import { Bell } from 'react-feather';
+import { IoCartOutline } from 'react-icons/io5';
 
 const NavbarUser = (props) => {
   // ** Props
@@ -34,7 +35,26 @@ const NavbarUser = (props) => {
         </NavItem>
       </div>
       <ul className="nav navbar-nav align-items-center ms-auto">
-        <Bell />
+        {/* <Bell  /> */}
+        <div>
+          <IoCartOutline
+            size={24}
+            style={{ marginRight: '5px' }}
+            onClick={() => console.log('clicked')}
+          />
+          {/* <Badge
+            color="primary"
+            pill
+            style={{
+              padding: '2px 5px',
+              fontSize: '9px',
+              position: 'relative',
+              zIndex: '9',
+            }}
+          >
+            2
+          </Badge> */}
+        </div>
         <UserDropdown userProfile={userProfile} />
       </ul>
     </Fragment>
