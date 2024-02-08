@@ -17,6 +17,20 @@ const Routes = [
     component: lazy(() => import('../../views/pages/Restorunts/LandingPage')),
   },
   {
+    path: '/addToCartPage',
+    component: lazy(() => import('../../views/pages/Restorunts/AddToCartPage')),
+  },
+  {
+    path: '/confirmOrderPage',
+    component: lazy(() => import('../../views/pages/Restorunts/confirmOrder')),
+  },
+  {
+    path: '/orderAcceptPage',
+    component: lazy(() =>
+      import('../../views/pages/Restorunts/OrderAcceptPage'),
+    ),
+  },
+  {
     path: '/foodPage',
     component: lazy(() => import('../../views/pages/Restorunts/FoodPage')),
   },

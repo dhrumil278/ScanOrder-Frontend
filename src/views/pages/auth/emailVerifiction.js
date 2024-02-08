@@ -39,6 +39,10 @@ const EmailVerification = () => {
         history.push('/home');
       }
     } catch (error) {
+      if (error.response.status === 403) {
+        localStorage.removeItem('accessToken');
+        history.push('/login');
+      }
       setIsLoading(false);
       toast.error(error.response.data.message);
       history.push('/login');

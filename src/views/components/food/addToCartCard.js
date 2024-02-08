@@ -22,7 +22,7 @@ import { CloudLightning, Star } from 'react-feather';
 import veg from '@src/assets/images/veg/icons8-veg-48.png';
 import nonVeg from '@src/assets/images/veg/non-vegetarian-food-symbol-48.png';
 
-function FoodCard({ food }) {
+function AddToCartCard({ food, UpdateQuantity }) {
   const history = useHistory();
   const [isFavorites, setIsFavorites] = useState(false);
   const [token, setToken] = useState([]);
@@ -52,6 +52,7 @@ function FoodCard({ food }) {
       );
 
       if (res.status === 200) {
+        UpdateQuantity(id, qty);
         if (qty === 0) {
           // setAddToCart(false);
         } else {
@@ -66,24 +67,24 @@ function FoodCard({ food }) {
     }
   };
 
-  const handleFavorites = async (id) => {
-    try {
-      const res = await axios.post(
-        `${process.env.REACT_APP_API}/food/bookmark?foodId=${id}`,
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
+  // const handleFavorites = async (id) => {
+  //   try {
+  //     const res = await axios.post(
+  //       `${process.env.REACT_APP_API}/food/bookmark?foodId=${id}`,
+  //       { headers: { Authorization: `Bearer ${token}` } },
+  //     );
 
-      if (res.status === 200) {
-        setIsFavorites(!isFavorites);
-      }
-    } catch (error) {
-      if (error.response.status === 403) {
-        localStorage.removeItem('accessToken');
-        history.push('/login');
-      }
-      setIsFavorites(false);
-    }
-  };
+  //     if (res.status === 200) {
+  //       setIsFavorites(!isFavorites);
+  //     }
+  //   } catch (error) {
+  //     if (error.response.status === 403) {
+  //       localStorage.removeItem('accessToken');
+  //       history.push('/login');
+  //     }
+  //     setIsFavorites(false);
+  //   }
+  // };
 
   const handlemain = (e, id, shopId) => {
     e.preventDefault();
@@ -157,7 +158,7 @@ function FoodCard({ food }) {
                   }
                 />
               </div>
-              {isFavorites || food.isbookmark ? (
+              {/* {isFavorites || food.isbookmark ? (
                 <GoHeartFill
                   size={15}
                   color="#7367f0"
@@ -169,7 +170,7 @@ function FoodCard({ food }) {
                   color="#000"
                   onClick={() => handleFavorites(food.id)}
                 />
-              )}
+              )} */}
             </div>
             {quantity > 0 ? (
               <ButtonGroup className="mt-1" style={{ marginLeft: 'auto' }}>
@@ -212,4 +213,4 @@ function FoodCard({ food }) {
   );
 }
 
-export default FoodCard;
+export default AddToCartCard;

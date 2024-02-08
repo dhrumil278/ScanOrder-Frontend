@@ -22,6 +22,7 @@ import axios from 'axios';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import toast, { Toaster } from 'react-hot-toast';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 
 const schema = Yup.object({
   firstname: Yup.string('notString').required('firstname required!'),
@@ -43,6 +44,7 @@ const AccountTabs = ({ data }) => {
   const [avatarLoading, setAvatarLoading] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const history = useHistory();
   const [avatar, setAvatar] = useState(
     'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
   );
@@ -59,22 +61,28 @@ const AccountTabs = ({ data }) => {
   useEffect(() => {
     setToken(localStorage.getItem('accessToken'));
     const getUserdata = async () => {
-      try {
-        setIsLoading(true);
-        const res = await axios.get(
-          `${process.env.REACT_APP_API}/user/getUser`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
+      if (token) {
+        try {
+          setIsLoading(true);
+          const res = await axios.get(
+            `${process.env.REACT_APP_API}/user/getUser`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
 
-        if (res.status === 200) {
-          setUserProfile(res.data.data);
-          setAvatar(res.data.data.avatar);
+          if (res.status === 200) {
+            setUserProfile(res.data.data);
+            setAvatar(res.data.data.avatar);
+            setIsLoading(false);
+          }
+        } catch (error) {
+          if (error.response.status === 403) {
+            localStorage.removeItem('accessToken');
+            history.push('/login');
+          }
           setIsLoading(false);
         }
-      } catch (error) {
-        setIsLoading(false);
       }
     };
     getUserdata();
@@ -96,6 +104,10 @@ const AccountTabs = ({ data }) => {
         setSubmitLoader(false);
       }
     } catch (error) {
+      if (error.response.status === 403) {
+        localStorage.removeItem('accessToken');
+        history.push('/login');
+      }
       setSubmitLoader(false);
     }
   };
@@ -127,6 +139,10 @@ const AccountTabs = ({ data }) => {
         toast.error('File not Found!');
       }
     } catch (error) {
+      if (error.response.status === 403) {
+        localStorage.removeItem('accessToken');
+        history.push('/login');
+      }
       setAvatarLoading(false);
 
       toast.error(error.response.data.message);

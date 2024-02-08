@@ -28,7 +28,7 @@ import { FaRupeeSign } from 'react-icons/fa';
 
 function PreviousOrders() {
   // ** State
-  const [open, setOpen] = useState('1');
+  const [open, setOpen] = useState('');
   const toggle = (id) => {
     if (open === id) {
       setOpen();
@@ -40,10 +40,12 @@ function PreviousOrders() {
     <>
       <Card className="card-snippet">
         <CardBody>
-          <Badge color="primary">12, Aug 2023</Badge>
-          <p className="fs-5 mb-0" style={{ padding: '5px 0px' }}>
-            <FaRupeeSign size={15} /> <strong>850</strong>
-          </p>
+          <div className="d-flex justify-content-between align-items-center">
+            <Badge color="primary">12, Aug 2023</Badge>
+            <p className="fs-2 mb-0 text-center" style={{ padding: '5px 0px' }}>
+              <FaRupeeSign size={18} /> <strong>850</strong>
+            </p>
+          </div>
           <Accordion open={open} toggle={toggle}>
             <AccordionItem>
               <AccordionHeader targetId="1" className="p-0">

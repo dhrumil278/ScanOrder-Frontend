@@ -46,15 +46,25 @@ const UserDropdown = () => {
     getUserdata();
   }, []);
   const getUserdata = async () => {
-    try {
-      const res = await axios.get(`${process.env.REACT_APP_API}/user/getUser`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+    if (token) {
+      try {
+        const res = await axios.get(
+          `${process.env.REACT_APP_API}/user/getUser`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
 
-      if (res.status === 200) {
-        setUserProfile(res.data.data);
+        if (res.status === 200) {
+          setUserProfile(res.data.data);
+        }
+      } catch (error) {
+        if (error.response.status === 403) {
+          localStorage.removeItem('accessToken');
+          history.push('/login');
+        }
       }
-    } catch (error) {}
+    }
   };
   const handleLogout = (e) => {
     e.preventDefault();

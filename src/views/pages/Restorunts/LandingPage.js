@@ -39,7 +39,6 @@ function LandingPage() {
 
     setToken(getToken);
     getAllCategory();
-    // toggleCategory();
   }, []);
 
   const getAllCategory = async () => {
@@ -59,6 +58,10 @@ function LandingPage() {
         toggleCategory('0', categoryRes.data.data[0].category);
       }
     } catch (error) {
+      if (error.response.status === 403) {
+        localStorage.removeItem('accessToken');
+        history.push('/login');
+      }
       setIsLoading(false);
     }
   };
@@ -68,7 +71,8 @@ function LandingPage() {
     try {
       setCategoryLoading(true);
       const categoryItemRes = await axios.get(
-        `${process.env.REACT_APP_API}/food/getFoodByCategory?category=${categoryName}&shopId=2af3906a-7313-46a1-8f66-416e5cc0f78a`, //TODO change Here
+        `${process.env.REACT_APP_API}/food/getFoodByCategory?category=${categoryName}&shopId=2af3906a-7313-46a1-8f66-416e5cc0f78a`,
+        { headers: { Authorization: `Bearer ${token}` } }, //TODO change Here
       );
 
       if (categoryItemRes.status === 200) {
@@ -76,6 +80,10 @@ function LandingPage() {
         setFood(categoryItemRes.data.data);
       }
     } catch (error) {
+      if (error.response.status === 403) {
+        localStorage.removeItem('accessToken');
+        history.push('/login');
+      }
       setCategoryLoading(false);
     }
   };

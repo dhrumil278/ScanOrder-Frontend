@@ -29,6 +29,7 @@ import toast, { Toaster } from 'react-hot-toast';
 // ** Custom Components
 import InputPasswordToggle from '@components/input-password-toggle';
 import { Eye, EyeOff } from 'react-feather';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 
 // ** Demo Components
 // import ApiKeysList from './ApiKeysList';
@@ -37,14 +38,33 @@ import { Eye, EyeOff } from 'react-feather';
 // import RecentDevices from './RecentDevices';
 
 const schema = Yup.object({
-  password: Yup.string().required('password required!'),
-  newPassword: Yup.string().required('newPassword required!'),
+  password: Yup.string()
+    .required('password required!')
+    .min(8, 'Password must be at least 8 characters long')
+    .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .matches(/\d/, 'Password must contain at least one digit')
+    .matches(
+      /[@$!%*?&]/,
+      'Password must contain at least one special character',
+    ),
+  newPassword: Yup.string()
+    .required('newPassword required!')
+    .min(8, 'Password must be at least 8 characters long')
+    .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .matches(/\d/, 'Password must contain at least one digit')
+    .matches(
+      /[@$!%*?&]/,
+      'Password must contain at least one special character',
+    ),
   confNewPassword: Yup.string()
     .oneOf([Yup.ref('newPassword'), null], 'Passwords must be same')
     .required('confNewPassword required!'),
 }).required();
 
 const SecurityTabContent = () => {
+  const history = useHistory();
   const [token, setToken] = useState([]);
   const [submitLoader, setSubmitLoader] = useState(false);
   const [visibility, setVisibility] = useState(false);
@@ -84,6 +104,10 @@ const SecurityTabContent = () => {
         toast.success(res.data.message);
       }
     } catch (error) {
+      if (error.response.status === 403) {
+        localStorage.removeItem('accessToken');
+        history.push('/login');
+      }
       setSubmitLoader(false);
     }
   };

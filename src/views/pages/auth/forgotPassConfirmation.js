@@ -47,7 +47,6 @@ const forgotPasswordConfirmation = () => {
     } catch (error) {
       setIsLoading(false);
       toast.error(error.response.data.message);
-
       history.push('/login');
     }
   };

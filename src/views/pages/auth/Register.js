@@ -64,11 +64,15 @@ const schema = yup
     email: yup.string().email().required(),
     password: yup
       .string()
-      // .matches(
-      //   '/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/',
-      //   'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character',
-      // )
-      .required(),
+      .required('Password is required')
+      .min(8, 'Password must be at least 8 characters long')
+      .matches(/[a-z]/, 'Password must contain at least one lowercase letter')
+      .matches(/[A-Z]/, 'Password must contain at least one uppercase letter')
+      .matches(/\d/, 'Password must contain at least one digit')
+      .matches(
+        /[@$!%*?&]/,
+        'Password must contain at least one special character',
+      ),
   })
   .required();
 
@@ -113,7 +117,6 @@ const Register = () => {
         data,
       );
 
-      setIsLoading(false);
       if (res.status === 200) {
         localStorage.setItem('email', res.data.data.email);
         history.push({
@@ -125,9 +128,14 @@ const Register = () => {
           },
         });
       }
+      setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
       toast.error(error.response.data.message);
+      if (error.response.status === 403) {
+        localStorage.removeItem('accessToken');
+        history.push('/login');
+      }
     }
   };
   return (

@@ -43,8 +43,11 @@ function BookmarkFoodCard({ food, UnbookmarkFood }) {
         UnbookmarkFood(food.id);
       }
     } catch (error) {
+      if (error.response.status === 403) {
+        localStorage.removeItem('accessToken');
+        history.push('/login');
+      }
       setIsFavorites(true);
-      console.log('error: ', error);
     }
   };
 

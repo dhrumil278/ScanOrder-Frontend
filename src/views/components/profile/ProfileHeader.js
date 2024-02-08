@@ -45,19 +45,27 @@ const ProfileHeader = () => {
   }, []);
 
   const getUserdata = async (accessToken) => {
-    try {
-      setIsLoading(true);
-      const res = await axios.get(`${process.env.REACT_APP_API}/user/getUser`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
+    if (accessToken) {
+      try {
+        setIsLoading(true);
+        const res = await axios.get(
+          `${process.env.REACT_APP_API}/user/getUser`,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          },
+        );
 
-      if (res.status === 200) {
-        setUserProfile(res.data.data);
+        if (res.status === 200) {
+          setUserProfile(res.data.data);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        if (error.response.status === 403) {
+          localStorage.removeItem('accessToken');
+          history.push('/login');
+        }
         setIsLoading(false);
       }
-    } catch (error) {
-      console.log('error: ', { error });
-      setIsLoading(false);
     }
   };
 

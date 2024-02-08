@@ -11,11 +11,12 @@ import { Sun, Moon } from 'react-feather';
 import { Badge, NavItem, NavLink } from 'reactstrap';
 import { Bell } from 'react-feather';
 import { IoCartOutline } from 'react-icons/io5';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 
 const NavbarUser = (props) => {
   // ** Props
   const { skin, setSkin, userProfile } = props;
-
+  const history = useHistory();
   // ** Function to toggle Theme (Light/Dark)
   const ThemeToggler = () => {
     if (skin === 'dark') {
@@ -40,7 +41,9 @@ const NavbarUser = (props) => {
           <IoCartOutline
             size={24}
             style={{ marginRight: '5px' }}
-            onClick={() => console.log('clicked')}
+            onClick={() => {
+              history.push('/addToCartPage');
+            }}
           />
           {/* <Badge
             color="primary"

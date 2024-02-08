@@ -79,8 +79,11 @@ const LoginCover = () => {
       }
     } catch (error) {
       setIsLoading(false);
-
       toast.error(error.response.data.message);
+      if (error.response.status === 403) {
+        localStorage.removeItem('accessToken');
+        history.push('/login');
+      }
     }
   };
   // const handleLogin = async (e) => {

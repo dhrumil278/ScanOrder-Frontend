@@ -22,6 +22,7 @@ const Home = () => {
     if (!accessToken) {
       history.push('/login');
     }
+    history.push('/landingPage');
     // if (userData) {
     //   localStorage.setItem('userData', JSON.stringify(userData));
     // }
